@@ -225,11 +225,12 @@ namespace MagicshapeMultitools {
 
         private static void AddSwirls(bool? inner) {
             using (new SaveStateScope(scnEditor.instance)) {
+                
+                scnEditor.instance.events.RemoveAll(e => e.eventType == LevelEventType.SetSpeed);
 
-                if (inner != null) {
-                    scnEditor.instance.events.RemoveAll(e =>
-                        e.eventType is LevelEventType.Twirl or LevelEventType.SetSpeed);
-                }
+                if (inner != null) 
+                    scnEditor.instance.events.RemoveAll(e => e.eventType == LevelEventType.Twirl);
+                
                 var angles = scrLevelMaker.instance.floorAngles.ToList();
                 float lastAngle = angles.First();
                 angles.RemoveAt(0);
