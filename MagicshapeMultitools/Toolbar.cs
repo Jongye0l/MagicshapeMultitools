@@ -52,8 +52,6 @@ namespace MagicshapeMultitools {
 
             if (_popup != null) Object.Destroy(_popup);
             
-            if (GCS.standaloneLevelMode) return;
-            
             _popup = Object.Instantiate(Assets.Popup);
             _panelOuter = _popup.transform.GetChild(0).GetComponent<RectTransform>();
             _panel = _panelOuter.GetChild(0).GetComponent<RectTransform>();
@@ -187,7 +185,7 @@ namespace MagicshapeMultitools {
                     var addangle = 360.0f / count;
                     for (int i = 1; i < count; i++) {
                         foreach (var angle in scrLevelMaker.instance.floorAngles) {
-                            CustomLevel.instance.levelData.angleData.Add(angle == 999 ? angle : angle - addangle * i);
+                            scnEditor.instance.levelData.angleData.Add(angle == 999 ? angle : angle - addangle * i);
                         }
                     }
                 }
@@ -229,7 +227,7 @@ namespace MagicshapeMultitools {
             using (new SaveStateScope(scnEditor.instance)) {
 
                 if (inner != null) {
-                    CustomLevel.instance.events.RemoveAll(e =>
+                    scnEditor.instance.events.RemoveAll(e =>
                         e.eventType is LevelEventType.Twirl or LevelEventType.SetSpeed);
                 }
                 var angles = scrLevelMaker.instance.floorAngles.ToList();
@@ -240,7 +238,7 @@ namespace MagicshapeMultitools {
                 float multiplier = 1;
                 foreach (float angle in angles) {
                     if (inner == null) {
-                        swirl ^= CustomLevel.instance.events.Count(e =>
+                        swirl ^= scnEditor.instance.events.Count(e =>
                             e.floor == index && e.eventType == LevelEventType.Twirl) % 2 == 1;
                     }
                     if (angle == 999) {
@@ -252,13 +250,13 @@ namespace MagicshapeMultitools {
                     var currangle = ((180 + lastAngle - angle) * (swirl ? -1 : 1)).NormalizeAngle();
                     if (inner == true) {
                         if (currangle > 180) {
-                            CustomLevel.instance.events.Add(Utils.LevelEvent(index, LevelEventType.Twirl));
+                            scnEditor.instance.events.Add(Utils.LevelEvent(index, LevelEventType.Twirl));
                             swirl = !swirl;
                             currangle = (360 - currangle).NormalizeAngle();
                         }
                     } else if (inner == false) {
                         if (currangle < 180) {
-                            CustomLevel.instance.events.Add(Utils.LevelEvent(index, LevelEventType.Twirl));
+                            scnEditor.instance.events.Add(Utils.LevelEvent(index, LevelEventType.Twirl));
                             swirl = !swirl;
                             currangle = (360 - currangle).NormalizeAngle();
                         }
@@ -269,7 +267,7 @@ namespace MagicshapeMultitools {
                     evnt.data["speedType"] = SpeedType.Multiplier;
                     evnt.data["bpmMultiplier"] = currMultiplier;
                     if (Math.Round(currMultiplier, 3) != 1)
-                        CustomLevel.instance.events.Add(evnt);
+                        scnEditor.instance.events.Add(evnt);
                     multiplier = currMultiplier * multiplier;
                     UnityModManager.Logger.Log(currangle + " / " + currMultiplier);
 
