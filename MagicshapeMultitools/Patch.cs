@@ -98,7 +98,7 @@ namespace MagicshapeMultitools {
                 angle %= 360;
             } while (angle < 0);
 
-            return angle;
+            return angle == 0 ? 360 : angle;
         }
 
         public static LevelEvent LevelEvent(int newFloor, LevelEventType type) {
